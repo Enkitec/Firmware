@@ -1,0 +1,104 @@
+* Z:\mnt\MAIN\Documents and Settings\Enkitec\Documents\LTspiceXVII\Current Dumping V1.asc
+V3 N014 0 SINE(0 {Vout/44} {freq}) AC 1 0
+R3 N015 0 27k
+R17 N001 N002 100
+R16 N026 N025 100
+R5 N001 N007 2k2
+R4 N021 N025 2k2
+C5 N001 0 100n
+C4 0 N025 100n
+R9 N011 O 6k8
+R8 O N020 6k8
+C7 N007 0 100µ V=63
+C6 0 N021 100µ V=63
+V1 0 N025 50 Rser=3
+R23 N016 OUT 4r7
+V2 N001 0 50 Rser=3
+R20 N009 FB 2k2
+L1 N009 OUT 1µ Rser=1m
+C19 FB N016 {Cx}
+Q14 N025 N019 N009 0 MJ15004M
+Q13 N001 N006 N009 0 MJ15003M
+D3 N009 N001 UF4007
+R13 N001 N003 1k
+R12 N024 N025 1k
+C8 N021 0 100n
+C9 0 N007 100n
+R§Load OUT 0 8
+D1 0 N007 1N5245
+D2 N021 0 1N5245
+C21 N001 0 4700µ V=63
+C20 0 N025 4700µ V=63
+R19 N008 N022 1k
+R14 N012 N018 {10k-Rx}
+R15 N005 N012 {Rx}
+Q1 N004 N007 N011 0 BC546B
+Q2 N023 N021 N020 0 BC556B
+Q5 N013 N012 N018 0 BC547B
+Q6 N018 N013 N005 0 BC557B
+R18 N005 N013 1k
+R1 N015 N014 1k
+C1 0 N015 33p
+Q4 0 N023 N024 0 BC546B
+Q3 0 N004 N003 0 BC556B
+R7 N001 N004 1k2
+R6 N023 N025 1k2
+C11 N004 N010 27p
+C10 N023 N017 27p
+C15 N012 N013 100n
+D4 N025 N009 UF4007
+R21 N006 N016 1
+R22 N016 N019 1
+Q7 N005 N003 N002 0 MJE350-O
+Q8 N018 N024 N026 0 MJE340-O
+D5 N005 N004 1N5711
+D6 N023 N018 1N5711
+C3 N001 0 100µ V=63
+C16 0 N025 100µ V=63
+C2 N005 N018 10µ V=63
+R10 N010 OUT 5k6
+R11 OUT N017 5k6
+C12 N010 N005 3p3
+C13 N017 N018 3p3
+V4 FB INV AC 1 0
+R24 FB 0 100
+XU1 FB N015 N007 N021 O OPA134
+Q9 N001 N005 N008 0 2N5551_Cordell
+Q10 N025 N018 N022 0 2N5401_Cordell
+Q11 N025 N022 N019 0 MJE350-O
+Q12 N001 N008 N006 0 MJE340-O
+.model D D
+.lib C:\users\enkitec\Documents\LTspiceXVII\lib\cmp\standard.dio
+.model NPN NPN
+.model PNP PNP
+.lib C:\users\enkitec\Documents\LTspiceXVII\lib\cmp\standard.bjt
+;.step param Vout list 4 5 6 7 8 9
+;.step oct param freq 20 20k 2
+;.step param Cx 95p 97p .1p
+.param Cx 95.7p
+.param Rx 7k5
+.step param freq list 1k 10k
+.param Vout 60
+* .inc Analyzer_Controls.txt\n.tran 0 {AnalysisTime} {SettlingTime} {MaxTimestep}
+;.ac dec 50 1 100Meg
+.options plotwinsize=0
+.options numdgt=7
+.options gmin=1e-9
+.options noopiter
+.param fft_pts=2**12
+.param timestep=1/(fft_pts*freq)
+.param start=((1/{freq})*8)
+.param stop=((1/{freq})*10)
+.tran 0 {stop} {start} {timestep}
+.four {freq} V(out)
+* PULSE({-Vout/44} {Vout/44} 0 1n 1n {0.5/freq} {1/freq} 100)
+* Just plot V(FB)/V(INV)
+* SINE(0 {Vout/44} {freq})
+* L1/C19 = R20 x R23
+;.meas TRAN PQ11pk MAX Pd(Q11)
+.meas TRAN PQ12pk MAX Pd(Q12)
+;.meas TRAN IQ11pk MAX Ic(Q11)
+;.meas TRAN IQ12pk MAX Ic(Q12)
+.lib C:\Users\Enkitec\Documents\LTspiceXVII\opa134.sub
+.backanno
+.end
